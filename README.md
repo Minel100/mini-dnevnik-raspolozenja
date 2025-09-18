@@ -4,7 +4,7 @@ Ovo je jednostavan Python program koji beleži dnevno raspoloženje korisnika, p
 
 ## Screenshot
 
-![Grafikon](screenshot1.png, screenshot2.png)
+![Grafikon](screenshot1.png; screenshot2.png)
 
 ## Kako pokrenuti
 1. Instaliraj Python 3
