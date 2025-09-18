@@ -1,12 +1,12 @@
 # mini_dnevnik.py
 
-from datetime import date
+from datetime import datetime  # izmeni import
 import csv
 import os
 from collections import Counter
 import matplotlib.pyplot as plt
 
-FAJL = r"C:\Users\mirko\OneDrive\Documents\Python\Projekti\dnevnik.csv"
+FAJL = r"C:\Users\mirko\OneDrive\Documents\GitHub\mini-dnevnik-raspolozenja\raspolozenje.csv"
 
 # --- Funkcija za unos raspoloženja ---
 def unos_raspolozenja():
@@ -18,10 +18,12 @@ def unos_raspolozenja():
         print("Nepoznata opcija, pokušaj ponovo.")
         return unos_raspolozenja()
 
-    danas = date.today()
-    with open(FAJL, "a", newline="") as fajl:
+    sada = datetime.now()
+    datum = sada.date()
+    vreme = sada.strftime("%H:%M:%S")
+    with open(FAJL, "a", newline="", encoding="utf-8") as fajl:
         writer = csv.writer(fajl)
-        writer.writerow([danas, raspolozenje])
+        writer.writerow([datum, vreme, raspolozenje])
 
     print("Zapisano! Hvala što deliš svoje raspoloženje :)")
 
@@ -32,23 +34,32 @@ def prikaz_prethodnih():
         print("Još nema zapisa.")
         return
 
-    with open(FAJL, "r") as fajl:
+    with open(FAJL, "r", encoding="utf-8") as fajl:
         reader = csv.reader(fajl)
         zapisi = list(reader)
         if not zapisi:
             print("Još nema zapisa.")
             return
         for linija in zapisi:
-            print(f"{linija[0]} -> {linija[1]}")
+            if len(linija) == 3:
+                print(f"vreme: {linija[1]} datum: {linija[0]} -> {linija[2]}")
+            else:
+                # podrška za stare zapise bez vremena
+                print(f"datum: {linija[0]} -> {linija[1]}", end="\n")
 
 # --- Funkcija za statistiku raspoloženja ---
 def statistika():
     if not os.path.exists(FAJL):
         return None
 
-    with open(FAJL, "r") as fajl:
+    with open(FAJL, "r", encoding="utf-8") as fajl:
         reader = csv.reader(fajl)
-        raspolozenja = [linija[1] for linija in reader]
+        raspolozenja = []
+        for linija in reader:
+            if len(linija) == 3:
+                raspolozenja.append(linija[2])
+            elif len(linija) == 2:
+                raspolozenja.append(linija[1])
 
     if not raspolozenja:
         return None
